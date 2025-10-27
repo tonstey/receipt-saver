@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+env/
+
+# Sensitive information
+.env
+*.sqlite3
+
+# Compiled Python files
+**/__pycache__/
+*.pyc
+
+# IDE specific files
+.idea/
+.vscode/
+
+# Uploaded media files
+media/
+
+# Log files
+*.log
+
+settings.py

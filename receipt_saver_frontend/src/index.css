@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+html {
+  width: 100vw;
+  height: 100vh;
+  background-color: #e4ebff;
+  display: flex;
+  position: relative;
+  box-sizing: border-box;
+}
+

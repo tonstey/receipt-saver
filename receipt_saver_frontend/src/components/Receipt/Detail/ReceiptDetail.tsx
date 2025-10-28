@@ -22,7 +22,6 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
   const refresh = useUserState((state) => state.refreshPlaceholder);
 
   const loadingRef = useRef<any>(null);
-  console.log(receipt);
 
   useEffect(() => {
     const getReceipt = async () => {
@@ -36,7 +35,7 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
       }
 
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/receipt/${receiptID}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/receipt/${receiptID}/`,
         {
           method: "GET",
           credentials: "include",
@@ -112,14 +111,14 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
               </div>
               <div className="flex flex-col">
                 <h1 className="text-xl font-semibold">
-                  Subtotal: ${receipt.subtotal}
+                  Subtotal: ${receipt.subtotal.toFixed(2)}
                 </h1>
                 <h1 className="text-xl font-semibold">
-                  {`Tax: $${receipt.tax} (${receipt.taxpercent}%)`}
+                  {`Tax: $${receipt.tax.toFixed(2)} (${receipt.taxpercent.toFixed(3)}%)`}
                 </h1>
                 <hr></hr>
                 <h1 className="text-2xl font-semibold">
-                  Total: ${receipt.total}
+                  Total: ${receipt.total.toFixed(2)}
                 </h1>
                 <h1 className="text-md text-gray-600">
                   {receipt.num_items} items

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUserState } from "../../state/authcomp";
-import { getCookie } from "../../lib/get_token";
+import get_token, { getCookie } from "../../lib/get_token";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
 
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
@@ -28,7 +28,7 @@ export default function Login() {
       return;
     }
 
-    const token = getCookie("csrftoken");
+    const token = await get_token();
     if (!token) {
       setError("Missing cookies.");
       return;
@@ -66,7 +66,7 @@ export default function Login() {
             <div>
               <h1>Username</h1>
               <input
-                className="border border-gray-400 w-full rounded px-3 py-2"
+                className="w-full rounded border border-gray-400 px-3 py-2"
                 type="text"
                 placeholder="Please enter your username."
                 value={username}
@@ -78,14 +78,14 @@ export default function Login() {
               <h1>Password</h1>
               <div className="relative">
                 <input
-                  className="border border-gray-400 w-full rounded px-3 py-2"
+                  className="w-full rounded border border-gray-400 px-3 py-2"
                   type={showPassword ? "text" : "password"}
                   placeholder="Please enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 ></input>
                 <div
-                  className="absolute top-1/4 right-2 text-lg p-1 rounded hover:cursor-pointer hover:bg-gray-300"
+                  className="absolute top-1/4 right-2 rounded p-1 text-lg hover:cursor-pointer hover:bg-gray-300"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? <ImEyeBlocked /> : <ImEye />}
@@ -96,7 +96,7 @@ export default function Login() {
 
           <div>
             <button
-              className="bg-black rounded-lg text-white w-full py-3 font-semibold text-lg hover:bg-gray-800 hover:cursor-pointer"
+              className="w-full rounded-lg bg-black py-3 text-lg font-semibold text-white hover:cursor-pointer hover:bg-gray-800"
               onClick={() => onLogin()}
               onKeyDown={(e) => (e.key === "Enter" ? onLogin() : "")}
             >

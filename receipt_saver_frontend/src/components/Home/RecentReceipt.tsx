@@ -33,7 +33,7 @@ export default function RecentReceipt({ receipt }: { receipt: any }) {
           </div>
         </div>
 
-        <h1 className="font-semibold">${receipt.total}</h1>
+        <h1 className="font-semibold">${receipt.total.toFixed(2)}</h1>
       </div>
     </>
   );

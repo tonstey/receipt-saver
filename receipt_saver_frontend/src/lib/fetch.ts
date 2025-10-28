@@ -7,14 +7,14 @@ export async function getReceipts(limit: number) {
   }
 
   const res = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/api/getreceipts?limit=${limit}`,
+    `${import.meta.env.VITE_BACKEND_URL}/api/getreceipts/?limit=${limit}`,
     {
       method: "GET",
       credentials: "include",
       headers: {
         "X-CSRFToken": token,
       },
-    }
+    },
   );
 
   const data = await res.json();

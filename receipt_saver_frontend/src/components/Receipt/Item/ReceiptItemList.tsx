@@ -15,8 +15,6 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
   const refreshVar = useUserState((state) => state.refreshPlaceholder);
   const refreshFunc = useUserState((state) => state.setRefreshPlaceholder);
 
-  console.log(itemList);
-
   useEffect(() => {
     const getReceiptList = async () => {
       setError("");
@@ -29,13 +27,13 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
       }
 
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/getitems/${receiptID}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/getitems/${receiptID}/`,
         {
           credentials: "include",
           headers: {
             "X-CSRFToken": token,
           },
-        }
+        },
       );
 
       setStatus("idle");
@@ -70,7 +68,7 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
         headers: {
           "X-CSRFToken": token,
         },
-      }
+      },
     );
 
     setStatus("idle");
@@ -87,11 +85,11 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
   return (
     <>
       {status === "idle" ? (
-        <div className="flex flex-col bg-white rounded-xl w-[60rem] p-6 gap-4">
-          <div className="flex justify-between items-center">
+        <div className="flex w-[60rem] flex-col gap-4 rounded-xl bg-white p-6">
+          <div className="flex items-center justify-between">
             <h1 className="text-2xl font-semibold">Items</h1>
             <button
-              className="flex items-center gap-3 bg-black text-white px-4 py-2 rounded-lg text-lg hover:cursor-pointer hover:bg-gray-700"
+              className="flex items-center gap-3 rounded-lg bg-black px-4 py-2 text-lg text-white hover:cursor-pointer hover:bg-gray-700"
               onClick={() => addItem()}
             >
               <FiPlus />

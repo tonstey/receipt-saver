@@ -66,12 +66,10 @@ class ReceiptSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
-        print(items_data[0])
+  
         if items_data is not None:
-            print("SHII")
             for item_data in items_data:
                 item_id = item_data.get("id")
-                print(item_id)
                 if item_id:
                     try:
                         # Update existing item
@@ -87,7 +85,7 @@ class ReceiptSerializer(serializers.ModelSerializer):
                 else:
                     # If no ID provided, create new item
                     Item.objects.create(receipt=instance, **item_data)
-        print("HECK")
+
         return instance
 
 class FileSerializer(serializers.Serializer):

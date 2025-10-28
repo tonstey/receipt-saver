@@ -12,7 +12,7 @@ export default function SidebarReceipt({ receipt }: { receipt: any }) {
   return (
     <>
       <div
-        className={`hover:cursor-pointer w-full rounded-lg py-2 px-4 flex flex-col gap-0.25 ${
+        className={`flex w-full flex-col gap-0.25 rounded-lg px-4 py-2 hover:cursor-pointer ${
           "receipt_uuid" in currProduct
             ? currProduct?.receipt_uuid === receipt.receipt_uuid
               ? "bg-gray-300"
@@ -26,17 +26,17 @@ export default function SidebarReceipt({ receipt }: { receipt: any }) {
           <h1 className="font-semibold">{receipt.name}</h1>
         </div>
 
-        <div className="flex justify-between text-gray-600 text-sm">
+        <div className="flex justify-between text-sm text-gray-600">
           <div className="flex items-center gap-1">
             <IoCalendarClearOutline />
             <h1>{stringToDate(receipt.date_purchased)}</h1>
           </div>
           <div>
-            <h1>${receipt.total}</h1>
+            <h1>${receipt.total.toFixed(2)}</h1>
           </div>
         </div>
 
-        <h1 className="text-gray-600 text-sm">{receipt.num_items} items</h1>
+        <h1 className="text-sm text-gray-600">{receipt.num_items} items</h1>
       </div>
     </>
   );

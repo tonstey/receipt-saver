@@ -37,8 +37,6 @@ export default function EditModal({
     }
 
     editReceipt.last_updated = currentDateString();
-    console.log(currentDateString());
-    console.log(receipt.receipt_uuid);
 
     const res = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}/api/receipt/${

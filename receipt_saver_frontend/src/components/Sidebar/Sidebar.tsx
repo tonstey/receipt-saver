@@ -7,7 +7,7 @@ import { useUserState } from "../../state/authcomp.tsx";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import SidebarReceipt from "./SidebarReceipt";
 import Authentication from "../User/Authentication";
-import { getCookie } from "../../lib/get_token.ts";
+import get_token, { getCookie } from "../../lib/get_token.ts";
 import { useEffect, useState } from "react";
 import { getReceipts } from "../../lib/fetch.ts";
 import { baseUser } from "../../lib/modelinterfaces.ts";

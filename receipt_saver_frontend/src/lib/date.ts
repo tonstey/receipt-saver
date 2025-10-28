@@ -21,7 +21,7 @@ export function stringToDate(stringDate: string) {
 
 export function currentDateString() {
   const date = new Date(Date.now());
-  console.log(date.getMonth());
+
   const strMonth =
     date.getMonth() + 1 >= 10
       ? String(date.getMonth() + 1)
@@ -35,20 +35,20 @@ export function currentDateString() {
 export function timeSinceDateString(time: number) {
   const seconds = time / 1000;
 
-  const days = seconds / 86400;
+  const days = Math.floor(seconds / 86400);
 
   if (days > 0) {
-    return `${Math.floor(days)} day${days === 1 ? "" : "s"} ago`;
+    return `${days} day${days === 1 ? "" : "s"} ago`;
   }
 
-  const months = days / 30;
+  const months = Math.floor(days / 30);
   if (months > 0) {
-    return `${Math.floor(months)} month${months === 1 ? "" : "s"} ago`;
+    return `${months} month${months === 1 ? "" : "s"} ago`;
   }
 
-  const years = months / 12;
+  const years = Math.floor(months / 12);
   if (years > 0) {
-    return `${Math.floor(years)} year${years === 1 ? "" : "s"} ago`;
+    return `${years} year${years === 1 ? "" : "s"} ago`;
   }
 
   return "0 days ago";

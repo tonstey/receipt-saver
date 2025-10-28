@@ -24,9 +24,9 @@ def get_receipts(request):
             dateordertype = "last_updated"
         
         receipts = Receipt.objects.filter(user=request.user).order_by(f"-{dateordertype}").values("receipt_uuid","name","date_purchased","num_items","total")[0:limit] 
-        print(receipts)
+
         return Response(receipts, status=status.HTTP_200_OK)
-    except:
+    except Exception as e:
         return Response({"error": "Internal server error, please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -121,14 +121,14 @@ def receipt_view(request, receipt_id):
         
         elif request.method == "PUT":
             edit_receipt = request.data
-            print(edit_receipt)
+ 
             receipt_serializer = ReceiptSerializer(receipt, data=edit_receipt, partial=True)
       
             if not receipt_serializer.is_valid():
                 return Response({"error": "Invalid receipt information"}, status=status.HTTP_400_BAD_REQUEST)
   
             receipt_serializer.save()
-            print("WYAA")
+
             return Response(receipt_serializer.data, status=status.HTTP_200_OK)
         
         elif request.method == "DELETE":
@@ -143,4 +143,5 @@ def receipt_view(request, receipt_id):
         return Response({"error": "Receipt not found"}, status=status.HTTP_404_NOT_FOUND)
 
     except:
+   
         return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)

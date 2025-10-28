@@ -6,7 +6,7 @@ urlpatterns = [
     path("csrf/", views.get_csrftoken),
     path("createuser/", user_views.create_user),
     path("user/", user_views.user_view),
-    path("user/figures", user_views.figures),
+    path("user/figures/", user_views.figures),
     path("logout/", user_views.logout_view),
     path("createreceipt/", receipt_views.create_receipt),
     path("getreceipts/", receipt_views.get_receipts),

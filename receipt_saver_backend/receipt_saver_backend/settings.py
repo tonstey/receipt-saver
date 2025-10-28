@@ -26,7 +26,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1','*']
 
 
 # Application definition
@@ -129,21 +129,27 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'receipts.CustomUser'
 
-CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOW_CREDENTIALS = True 
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173","http://127.0.0.1:5173",]
+
+
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 86400  # 24 hours
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
-SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'Lax'  # match CSRF cookie policy
 
-# CSRF Settings - Important for session authentication
-CSRF_COOKIE_HTTPONLY = False  # Allows JavaScript to read CSRF token
-CSRF_COOKIE_SECURE = False    # Set to True in production with HTTPS
+# ✅ CSRF settings
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_TRUSTED_ORIGINS = ['http://localhost:4000', 'http://127.0.0.1:4000','http://localhost:5173', 'http://127.0.0.1:5173']  # Add your frontend URL
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
 
 REST_FRAMEWORK = {

@@ -114,7 +114,7 @@ def item_view(request, item_id):
             receipt.total = receipt.subtotal + receipt.tax 
             receipt.last_updated = timezone.now()
 
-            receipt -= 1
+            receipt.num_items = len(all_items)
             receipt.save()
 
             return Response({"success": True}, status=status.HTTP_200_OK)
@@ -125,5 +125,6 @@ def item_view(request, item_id):
     except Item.DoesNotExist:
         return Response({"error": "Item does not exist."}, status=status.HTTP_404_NOT_FOUND)
     except:
+
         return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     

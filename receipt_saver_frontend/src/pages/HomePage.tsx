@@ -11,7 +11,7 @@ import RecentReceipt from "../components/Home/RecentReceipt";
 
 import { useUserState } from "../state/authcomp";
 import { useNavigate } from "react-router";
-import { getCookie } from "../lib/get_token";
+import get_token, { getCookie } from "../lib/get_token";
 import { type Receipt } from "../lib/modelinterfaces";
 
 export default function HomePage({
@@ -37,7 +37,6 @@ export default function HomePage({
   const resetDisplay = useUserState((state) => state.resetDisplayReceipt);
 
   const navigate = useNavigate();
-  console.log(figures);
 
   useEffect(() => {
     resetDisplay();
@@ -50,19 +49,20 @@ export default function HomePage({
         setReceiptStatus("loading");
         setFigureStatus("loading");
 
-        const token = getCookie("csrftoken");
+        const token = await get_token();
+
         if (!token) {
           setReceiptError("Missing cookies.");
           setFigureError("Missing cookies.");
           return;
         }
         const res = await Promise.all([
-          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/figures`, {
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/figures/`, {
             credentials: "include",
             headers: { "X-CSRFToken": token },
           }),
           fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/getreceipts?limit=3&dateordertype=created_at`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/getreceipts/?limit=3&dateordertype=date_purchased`,
             {
               credentials: "include",
               headers: { "X-CSRFToken": token },
@@ -76,7 +76,6 @@ export default function HomePage({
         setFigureStatus("idle");
         const receiptsData = await res[1].json();
 
-        console.log(figureData);
         if (!res[0].ok) {
           setFigureError(figureData.error);
         } else {

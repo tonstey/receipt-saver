@@ -11,7 +11,7 @@ import RecentReceipt from "../components/Home/RecentReceipt";
 
 import { useUserState } from "../state/authcomp";
 import { useNavigate } from "react-router";
-import get_token, { getCookie } from "../lib/get_token";
+import { getCookie } from "../lib/get_token";
 import { type Receipt } from "../lib/modelinterfaces";
 
 export default function HomePage({
@@ -49,7 +49,7 @@ export default function HomePage({
         setReceiptStatus("loading");
         setFigureStatus("loading");
 
-        const token = await get_token();
+        const token = getCookie("csrftoken");
 
         if (!token) {
           setReceiptError("Missing cookies.");

@@ -54,7 +54,7 @@ export const useUserState = create<UserState>((set) => ({
     set(() => ({ displayReceipt: inputReceipt })),
   resetDisplayReceipt: () => set(() => ({ displayReceipt: baseReceipt })),
 
-  compareItemActive: false,
+  compareItemActive: true,
   setCompareItemActive: () =>
     set((state) => ({ compareItemActive: !state.compareItemActive })),
 

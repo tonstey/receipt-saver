@@ -3,7 +3,7 @@ import { IoMenu } from "react-icons/io5";
 
 import { useUserState } from "../state/authcomp";
 import { useEffect, useState, type ChangeEvent } from "react";
-import ConfirmImage from "../components/Upload/confirmimage.tsx";
+import ConfirmImage from "../components/Upload/confirmImage.tsx";
 
 export default function ScanReceipt({
   toggleSidebar,
@@ -35,9 +35,9 @@ export default function ScanReceipt({
 
   return (
     <>
-      <div className="w-full flex flex-col items-center relative h-screen justify-center">
+      <div className="relative flex h-screen w-full flex-col items-center justify-center">
         <IoMenu
-          className="absolute top-2 left-5 text-5xl rounded-xl hover:bg-indigo-200 hover:cursor-pointer"
+          className="absolute top-2 left-5 rounded-xl text-5xl hover:cursor-pointer hover:bg-indigo-200"
           onClick={() => toggleSidebar((prev: boolean) => !prev)}
         />
         {status === "idle" ? (
@@ -49,21 +49,21 @@ export default function ScanReceipt({
               </h1>
             </div>
 
-            <div className="flex flex-col items-center bg-white rounded-lg p-6 mt-4 gap-6 w-[32rem]">
+            <div className="mt-4 flex w-[32rem] flex-col items-center gap-6 rounded-lg bg-white p-6">
               <div className="flex flex-col items-center">
                 <h1 className="text-2xl font-semibold">Upload Receipt Photo</h1>
                 <h1 className="text-gray-600">
                   Choose how you'd like to add your receipt
                 </h1>
               </div>
-              <div className="flex flex-col w-full gap-3">
-                <button className="flex bg-black text-white items-center justify-center gap-3 text-xl py-3 rounded-xl font-semibold hover:cursor-pointer hover:bg-gray-700">
+              <div className="flex w-full flex-col gap-3">
+                <button className="flex items-center justify-center gap-3 rounded-xl bg-black py-3 text-xl font-semibold text-white hover:cursor-pointer hover:bg-gray-700">
                   <MdOutlinePhotoCamera className="text-2xl" />
                   Take Photo
                 </button>
 
                 <label
-                  className="flex bg-gray-100 text-black border border-gray-300 items-center justify-center gap-3 text-xl py-3 rounded-xl font-semibold hover:cursor-pointer hover:bg-gray-200"
+                  className="flex items-center justify-center gap-3 rounded-xl border border-gray-300 bg-gray-100 py-3 text-xl font-semibold text-black hover:cursor-pointer hover:bg-gray-200"
                   htmlFor="receiptupload"
                 >
                   <MdFileUpload className="text-2xl" />
@@ -83,7 +83,7 @@ export default function ScanReceipt({
                 <h1 className="text-lg font-semibold text-gray-600">
                   Tips for better scanning:
                 </h1>
-                <ul className="flex flex-col items-center text-sm list-disc">
+                <ul className="flex list-disc flex-col items-center text-sm">
                   <li>Ensure good lighting</li>
                   <li>Keep receipt flat and straight</li>
                   <li>Include the entire receipt in frame</li>

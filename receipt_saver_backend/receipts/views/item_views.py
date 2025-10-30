@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from ..models import CustomUser, Receipt, Item
 from ..serializer import ItemSerializer
+from ..storescrape import Scraper
 
 @api_view(["POST"])
 def create_item(request, receipt_id):
@@ -128,3 +129,29 @@ def item_view(request, item_id):
 
         return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+
+@api_view(["GET"])
+def check_stores(request):
+    try:
+        if not request.user.is_authenticated or not request.user:
+            return Response({"error": "Please log in."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if request.method == "GET":
+            store = request.query_params.get("store")
+            item = request.query_params.get("item")
+            print(store)
+            print(item)
+
+            if not store:
+                return Response({"error": "Missing store name to compare."}, status=status.HTTP_400_BAD_REQUEST)
+            print("gay")
+            storeChecker = Scraper(store, item)
+            print("Bitch")
+            result = storeChecker.checkStore()
+            print(result)
+            print("Chat")
+            return Response(result, status = status.HTTP_400_BAD_REQUEST if result.error else status.HTTP_200_OK )
+
+        return Response({"error": ""}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    except:
+        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)

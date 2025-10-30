@@ -13,5 +13,6 @@ urlpatterns = [
     path("receipt/<str:receipt_id>/", receipt_views.receipt_view),
     path("createitem/<str:receipt_id>/", item_views.create_item),
     path("getitems/<str:receipt_id>/", item_views.get_all_items),
-    path("item/<str:item_id>/", item_views.item_view)
+    path("item/<str:item_id>/", item_views.item_view),
+    path("scrapestore", item_views.check_stores)
 ]

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUserState } from "../../state/authcomp";
-import get_token, { getCookie } from "../../lib/get_token";
+import get_token from "../../lib/get_token";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
 
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";

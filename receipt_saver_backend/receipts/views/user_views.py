@@ -6,8 +6,6 @@ from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_protect
 from django.db import connection
 
-
-
 from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
 
@@ -16,7 +14,6 @@ from django_ratelimit.exceptions import Ratelimited
 
 from ..models import CustomUser, Receipt, Item
 from ..serializer import UserSerializer
-
 from ..methods import verifyPassword
 
 @api_view(["POST"])

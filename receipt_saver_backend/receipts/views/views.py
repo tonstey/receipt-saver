@@ -1,11 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+
 from django.middleware.csrf import get_token
 from django_ratelimit.decorators import ratelimit
 from django_ratelimit.exceptions import Ratelimited
-
-
 
 @api_view(["GET"])
 @ratelimit(key="ip", rate="5/s", block=True)

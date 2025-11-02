@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 from .views import views, user_views, receipt_views, item_views
 

@@ -18,7 +18,6 @@ function App() {
   );
   const [status, setStatus] = useState<"idle" | "loading">("loading");
 
-  const user = useUserState((state) => state.user);
   const setUser = useUserState((state) => state.setUser);
 
   useEffect(() => {

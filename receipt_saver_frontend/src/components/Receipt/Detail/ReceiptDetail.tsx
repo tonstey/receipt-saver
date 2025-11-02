@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useUserState } from "../../../state/authcomp";
 
 import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal";
 
+import { useUserState } from "../../../state/authcomp";
 import { getCookie } from "../../../lib/get_token";
 import { stringToDate } from "../../../lib/date";
 
@@ -13,9 +13,10 @@ import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
   const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState("");
-  const [openDelete, setOpenDelete] = useState(false);
 
   const receipt = useUserState((state) => state.displayReceipt);
   const setReceipt = useUserState((state) => state.setDisplayReceipt);

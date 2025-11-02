@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 import { getCookie } from "../../lib/get_token";
+import { useUserState } from "../../state/authcomp";
 
 import { FaArrowLeftLong, FaCheck } from "react-icons/fa6";
-import { useUserState } from "../../state/authcomp";
 import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ConfirmImage({
@@ -14,15 +14,16 @@ export default function ConfirmImage({
   image: File | null;
   reupload: Function;
 }) {
-  const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [previewLink, setPreviewLink] = useState<string | undefined>(undefined);
+
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
   const refreshReceiptList = useUserState(
     (state) => state.setRefreshPlaceholder,
   );
-
   const setUser = useUserState((state) => state.setUser);
 
   useEffect(() => {

@@ -1,9 +1,11 @@
-import { Dialog } from "radix-ui";
 import { useState } from "react";
-import { getCookie } from "../../../lib/get_token";
 import { useNavigate } from "react-router";
-import type { Receipt } from "../../../lib/modelinterfaces";
+import { Dialog } from "radix-ui";
+
+import { getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
+import type { Receipt } from "../../../lib/modelinterfaces";
+
 import { AiOutlineLoading } from "react-icons/ai";
 
 export default function DeleteModal({

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { FiPlus } from "react-icons/fi";
-import { getCookie } from "../../../lib/get_token";
+
 import ReceiptItem from "./ReceiptItem";
+import { getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
+
 import { AiOutlineLoading } from "react-icons/ai";
+import { FiPlus } from "react-icons/fi";
 
 export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");

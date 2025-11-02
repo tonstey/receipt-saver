@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "radix-ui";
-import { getCookie } from "../../../lib/get_token";
 
+import { getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
-import type { Receipt } from "../../../lib/modelinterfaces";
 import { currentDateString } from "../../../lib/date";
+import type { Receipt } from "../../../lib/modelinterfaces";
+
 import { AiOutlineLoading } from "react-icons/ai";
 
 export default function EditModal({

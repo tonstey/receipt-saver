@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router";
 
-import { IoCalendarClearOutline } from "react-icons/io5";
-import { LuReceipt } from "react-icons/lu";
 import { stringToDate } from "../../lib/date";
 import { useUserState } from "../../state/authcomp";
+
+import { IoCalendarClearOutline } from "react-icons/io5";
+import { LuReceipt } from "react-icons/lu";
 
 export default function SidebarReceipt({
   receipt,
@@ -13,6 +14,7 @@ export default function SidebarReceipt({
   toggleSidebar: Function;
 }) {
   const navigate = useNavigate();
+
   const currProduct = useUserState((state) => state.displayReceipt);
 
   return (

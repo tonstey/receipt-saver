@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { useUserState } from "../../../state/authcomp";
+import { getCookie } from "../../../lib/get_token";
+import { baseItem, type Item } from "../../../lib/modelinterfaces";
 
+import { AiOutlineLoading } from "react-icons/ai";
 import { FaRegTrashAlt, FaCheck } from "react-icons/fa";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { baseItem, type Item } from "../../../lib/modelinterfaces";
-import { getCookie } from "../../../lib/get_token";
-import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
@@ -17,6 +17,8 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
   const [editItem, setEditItem] = useState<Item>(receiptItem || baseItem);
 
   const refreshFunc = useUserState((state) => state.setRefreshPlaceholder);
+  const compareItem = useUserState((state) => state.setCompareItemActive);
+  const displayItem = useUserState((state) => state.setDisplayItem);
 
   useEffect(() => {
     setEditItem(receiptItem);
@@ -64,6 +66,7 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
     setIsEditting(false);
     refreshFunc();
   };
+
   const onDelete = async () => {
     setError("");
     setStatus("loading");
@@ -97,8 +100,6 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
     refreshFunc();
   };
 
-  const compareItem = useUserState((state) => state.setCompareItemActive);
-  const displayItem = useUserState((state) => state.setDisplayItem);
   const onCompare = () => {
     displayItem(receiptItem);
     compareItem();

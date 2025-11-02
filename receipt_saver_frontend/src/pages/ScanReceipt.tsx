@@ -1,10 +1,11 @@
-import { MdOutlinePhotoCamera, MdFileUpload } from "react-icons/md";
-import { IoMenu } from "react-icons/io5";
-
-import { useUserState } from "../state/authcomp";
 import { useEffect, useState, useRef, type ChangeEvent } from "react";
 import Webcam from "react-webcam";
+
+import { useUserState } from "../state/authcomp";
 import ConfirmImage from "../components/Upload/confirmImage.tsx";
+
+import { MdOutlinePhotoCamera, MdFileUpload } from "react-icons/md";
+import { IoMenu } from "react-icons/io5";
 
 export default function ScanReceipt({
   toggleSidebar,

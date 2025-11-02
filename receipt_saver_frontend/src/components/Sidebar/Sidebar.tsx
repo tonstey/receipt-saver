@@ -1,15 +1,15 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+
+import SidebarReceipt from "./SidebarReceipt";
+import Authentication from "../User/Authentication";
+import { useUserState } from "../../state/authcomp.tsx";
+import { getCookie } from "../../lib/get_token.ts";
+import { getReceipts } from "../../lib/fetch.ts";
+import { baseUser } from "../../lib/modelinterfaces.ts";
 
 import { IoCameraOutline } from "react-icons/io5";
 import { LuReceipt } from "react-icons/lu";
-
-import { useUserState } from "../../state/authcomp.tsx";
-import SidebarReceipt from "./SidebarReceipt";
-import Authentication from "../User/Authentication";
-import { getCookie } from "../../lib/get_token.ts";
-import { useEffect, useState } from "react";
-import { getReceipts } from "../../lib/fetch.ts";
-import { baseUser } from "../../lib/modelinterfaces.ts";
 import { AiOutlineLoading } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
 
@@ -20,9 +20,10 @@ export default function Sidebar({
   isVisible: boolean;
   toggleSidebar: Function;
 }) {
+  const [limit, setLimit] = useState(10);
+
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState("");
-  const [limit, setLimit] = useState(10);
 
   const user = useUserState((state) => state.user);
   const setUser = useUserState((state) => state.setUser);

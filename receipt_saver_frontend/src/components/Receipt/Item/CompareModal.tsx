@@ -3,10 +3,10 @@ import { Dialog } from "radix-ui";
 import Select from "react-select";
 
 import { useUserState } from "../../../state/authcomp";
-
-import { IoClose } from "react-icons/io5";
 import { getCookie } from "../../../lib/get_token";
 import type { ComparedItem } from "../../../lib/modelinterfaces";
+
+import { IoClose } from "react-icons/io5";
 import { AiOutlineLoading } from "react-icons/ai";
 
 export default function CompareModal() {

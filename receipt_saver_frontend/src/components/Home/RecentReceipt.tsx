@@ -1,7 +1,8 @@
+import { useNavigate } from "react-router";
+import { timeSinceDateString } from "../../lib/date";
+
 import { GoDotFill } from "react-icons/go";
 import { LuReceipt } from "react-icons/lu";
-import { timeSinceDateString } from "../../lib/date";
-import { useNavigate } from "react-router";
 
 export default function RecentReceipt({ receipt }: { receipt: any }) {
   const receiptDate = new Date(receipt.date_purchased);

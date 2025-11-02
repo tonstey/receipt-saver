@@ -1,10 +1,10 @@
 import { useParams } from "react-router";
 
-import { IoMenu } from "react-icons/io5";
-
 import CompareModal from "../components/Receipt/Item/CompareModal";
 import ReceiptDetail from "../components/Receipt/Detail/ReceiptDetail";
 import ReceiptItemList from "../components/Receipt/Item/ReceiptItemList";
+
+import { IoMenu } from "react-icons/io5";
 
 export default function ReceiptPage({
   toggleSidebar,

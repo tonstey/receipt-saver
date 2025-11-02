@@ -1,17 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+
 import { useUserState } from "../../state/authcomp";
 import get_token from "../../lib/get_token";
+
+import { AiOutlineLoading } from "react-icons/ai";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
 
-import { useNavigate } from "react-router";
-import { AiOutlineLoading } from "react-icons/ai";
-
 export default function Login() {
-  const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
+  const [error, setError] = useState("");
 
   const setUser = useUserState((state) => state.setUser);
   const setIsOpen = useUserState((state) => state.setAuthenticateActive);

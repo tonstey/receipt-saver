@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import type { User, Receipt, Item } from "../lib/modelinterfaces";
 import { baseUser, baseReceipt, baseItem } from "../lib/modelinterfaces";
+import type { User, Receipt, Item } from "../lib/modelinterfaces";
 
 type UserState = {
   authenticateActive: boolean;

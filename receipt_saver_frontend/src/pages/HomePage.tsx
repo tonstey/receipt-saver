@@ -1,37 +1,37 @@
 import { useState, useEffect } from "react";
-
-import { LuReceipt } from "react-icons/lu";
-import { BsBoxSeam } from "react-icons/bs";
-import { FaArrowTrendUp, FaArrowRightLong } from "react-icons/fa6";
-import { IoCalendarClearOutline, IoMenu } from "react-icons/io5";
-import { BiDollar } from "react-icons/bi";
+import { useNavigate } from "react-router";
 
 import Authentication from "../components/User/Authentication";
 import RecentReceipt from "../components/Home/RecentReceipt";
 
 import { useUserState } from "../state/authcomp";
-import { useNavigate } from "react-router";
 import { getCookie } from "../lib/get_token";
 import { type Receipt } from "../lib/modelinterfaces";
+
+import { LuReceipt } from "react-icons/lu";
+import { BsBoxSeam } from "react-icons/bs";
+import { BiDollar } from "react-icons/bi";
 import { AiOutlineLoading } from "react-icons/ai";
+import { FaArrowTrendUp, FaArrowRightLong } from "react-icons/fa6";
+import { IoCalendarClearOutline, IoMenu } from "react-icons/io5";
 
 export default function HomePage({
   toggleSidebar,
 }: {
   toggleSidebar: Function;
 }) {
-  const [receiptError, setReceiptError] = useState("");
-  const [figureError, setFigureError] = useState("");
-  const [receiptStatus, setReceiptStatus] = useState<"idle" | "loading">(
-    "idle",
-  );
-  const [figureStatus, setFigureStatus] = useState<"idle" | "loading">("idle");
-
   const [recentReceipts, setRecentReceipts] = useState<Receipt[] | null>(null);
   const [figures, setFigures] = useState<{
     monthlyspent: number;
     savings: number;
   }>({ monthlyspent: 0, savings: 0 });
+
+  const [receiptStatus, setReceiptStatus] = useState<"idle" | "loading">(
+    "idle",
+  );
+  const [figureStatus, setFigureStatus] = useState<"idle" | "loading">("idle");
+  const [receiptError, setReceiptError] = useState("");
+  const [figureError, setFigureError] = useState("");
 
   const user = useUserState((state) => state.user);
   const openAuth = useUserState((state) => state.setAuthenticateActive);

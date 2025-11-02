@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { validate } from "email-validator";
 import PasswordValidator from "password-validator";
+
 import PasswordChecklist from "./PasswordChecklist";
 
 import { ImEye, ImEyeBlocked } from "react-icons/im";

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { Routes, Route } from "react-router";
 
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -10,6 +9,7 @@ import ReceiptPage from "./pages/ReceiptPage";
 import { getCookie } from "./lib/get_token";
 import { useUserState } from "./state/authcomp";
 import { baseUser } from "./lib/modelinterfaces";
+
 import { AiOutlineLoading } from "react-icons/ai";
 
 function App() {
@@ -25,6 +25,7 @@ function App() {
     const resetUser = async () => {
       const token = getCookie("csrftoken");
       if (!token) {
+        setStatus("idle");
         return;
       }
 
@@ -47,10 +48,9 @@ function App() {
     };
     setStatus("loading");
 
-    if (user.username) {
-      resetUser();
-    }
-    setStatus("loading");
+    resetUser();
+
+    setStatus("idle");
   }, []);
 
   return (

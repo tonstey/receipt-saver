@@ -56,7 +56,7 @@ def read_receipt(file):
                 }
     
         r = requests.post('https://api.ocr.space/parse/image',
-                            files={'file': ('receipt.jgp', buffer, 'image/jpeg')},
+                            files={'file': ('receipt.jpg', buffer, 'image/jpeg')},
                             data=payload, timeout=30
                             )
         

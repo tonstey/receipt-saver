@@ -38,6 +38,8 @@ def verifyPassword(password:str) -> bool:
 
 def compress_image(file):
     image = Image.open(file)
+    if image.mode == "RGBA":
+        image = image.convert("RGB")
     buffer = io.BytesIO()
     image.save(buffer, format="JPEG", quality=70)
     buffer.seek(0)

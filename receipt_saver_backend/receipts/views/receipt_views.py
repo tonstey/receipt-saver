@@ -9,7 +9,7 @@ from django_ratelimit.exceptions import Ratelimited
 from ..models import Receipt
 from ..serializer import ReceiptSerializer, FileSerializer
 
-from ..methods import compress_image, read_receipt, ReceiptParser
+from ..methods import read_receipt, ReceiptParser
 
 @api_view(["GET"])
 @ratelimit(key="ip", rate="5/s", block=True)
@@ -63,8 +63,7 @@ def create_receipt(request):
   ########## END FILE PROCESSING
 
   ########## BEGIN TEXT PROCESSING
-        compress_file = compress_image(valid_file)    
-        image_text = read_receipt(compress_file)
+        image_text = read_receipt(valid_file)
       
         if not image_text["success"]:
             return Response({"error": "Unable to convert image to text, please try again later."}, status=status.HTTP_400_BAD_REQUEST)

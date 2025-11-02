@@ -5,7 +5,7 @@ import Authentication from "../components/User/Authentication";
 import RecentReceipt from "../components/Home/RecentReceipt";
 
 import { useUserState } from "../state/authcomp";
-import { getCookie } from "../lib/get_token";
+import { get_token, getCookie } from "../lib/get_token";
 import { type Receipt } from "../lib/modelinterfaces";
 
 import { LuReceipt } from "react-icons/lu";
@@ -50,23 +50,21 @@ export default function HomePage({
         setReceiptStatus("loading");
         setFigureStatus("loading");
 
-        const token = getCookie("csrftoken");
-
+        let token = getCookie("csrftoken");
         if (!token) {
-          setReceiptError("Missing cookies.");
-          setFigureError("Missing cookies.");
-          return;
+          token = await get_token();
         }
+
         const res = await Promise.all([
           fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/figures/`, {
             credentials: "include",
-            headers: { "X-CSRFToken": token },
+            headers: { "X-CSRFToken": token ?? "" },
           }),
           fetch(
             `${import.meta.env.VITE_BACKEND_URL}/api/getreceipts/?limit=3&dateordertype=date_purchased`,
             {
               credentials: "include",
-              headers: { "X-CSRFToken": token },
+              headers: { "X-CSRFToken": token ?? "" },
             },
           ),
         ]);

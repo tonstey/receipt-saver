@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 
-import { getCookie } from "../../lib/get_token";
+import { get_token, getCookie } from "../../lib/get_token";
 import { useUserState } from "../../state/authcomp";
 
 import { FaArrowLeftLong, FaCheck } from "react-icons/fa6";
@@ -40,9 +40,10 @@ export default function ConfirmImage({
       return;
     }
     setStatus("loading");
-    const token = getCookie("csrftoken");
+
+    let token = getCookie("csrftoken");
     if (!token) {
-      return;
+      token = await get_token();
     }
 
     const form = new FormData();
@@ -54,7 +55,7 @@ export default function ConfirmImage({
         method: "POST",
         credentials: "include",
         headers: {
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
         body: form,
       },
@@ -74,7 +75,7 @@ export default function ConfirmImage({
         method: "GET",
         credentials: "include",
         headers: {
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
       },
     );

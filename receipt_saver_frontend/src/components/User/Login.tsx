@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useUserState } from "../../state/authcomp";
-import get_token from "../../lib/get_token";
+import { get_token, getCookie } from "../../lib/get_token";
 
 import { AiOutlineLoading } from "react-icons/ai";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
@@ -30,10 +30,9 @@ export default function Login() {
       return;
     }
 
-    const token = await get_token();
+    let token = getCookie("csrftoken");
     if (!token) {
-      setError("Missing cookies.");
-      return;
+      token = await get_token();
     }
 
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/`, {
@@ -41,7 +40,7 @@ export default function Login() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": token,
+        "X-CSRFToken": token ?? "",
       },
       body: JSON.stringify({ username: username, password: password }),
     });

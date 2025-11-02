@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import SidebarReceipt from "./SidebarReceipt";
 import Authentication from "../User/Authentication";
 import { useUserState } from "../../state/authcomp.tsx";
-import { getCookie } from "../../lib/get_token.ts";
+import { get_token, getCookie } from "../../lib/get_token.ts";
 import { getReceipts } from "../../lib/fetch.ts";
 import { baseUser } from "../../lib/modelinterfaces.ts";
 
@@ -62,9 +62,9 @@ export default function Sidebar({
   };
 
   const onLogout = async () => {
-    const token = getCookie("csrftoken");
+    let token = getCookie("csrftoken");
     if (!token) {
-      return;
+      token = await get_token();
     }
 
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout/`, {
@@ -72,7 +72,7 @@ export default function Sidebar({
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": token,
+        "X-CSRFToken": token ?? "",
       },
     });
 

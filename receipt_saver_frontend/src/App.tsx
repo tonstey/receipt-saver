@@ -6,7 +6,7 @@ import HomePage from "./pages/HomePage";
 import ScanReceipt from "./pages/ScanReceipt";
 import ReceiptPage from "./pages/ReceiptPage";
 
-import { getCookie } from "./lib/get_token";
+import { getCookie, get_token } from "./lib/get_token";
 import { useUserState } from "./state/authcomp";
 import { baseUser } from "./lib/modelinterfaces";
 
@@ -22,10 +22,9 @@ function App() {
 
   useEffect(() => {
     const resetUser = async () => {
-      const token = getCookie("csrftoken");
+      let token = getCookie("csrftoken");
       if (!token) {
-        setStatus("idle");
-        return;
+        token = await get_token();
       }
 
       const res = await fetch(
@@ -35,7 +34,7 @@ function App() {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": token,
+            "X-CSRFToken": token ?? "",
           },
         },
       );

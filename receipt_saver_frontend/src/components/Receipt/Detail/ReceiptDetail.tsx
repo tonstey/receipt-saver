@@ -4,7 +4,7 @@ import DeleteModal from "./DeleteModal";
 import EditModal from "./EditModal";
 
 import { useUserState } from "../../../state/authcomp";
-import { getCookie } from "../../../lib/get_token";
+import { get_token, getCookie } from "../../../lib/get_token";
 import { stringToDate } from "../../../lib/date";
 
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -27,9 +27,10 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
       setError("");
       setStatus("loading");
 
-      const token = getCookie("csrftoken");
+      let token = getCookie("csrftoken");
       if (!token) {
-        setError("Missing cookies.");
+        token = await get_token();
+        setStatus("idle");
         return;
       }
 

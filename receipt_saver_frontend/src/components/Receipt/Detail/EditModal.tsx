@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Dialog } from "radix-ui";
 
-import { getCookie } from "../../../lib/get_token";
+import { get_token, getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
 import { currentDateString } from "../../../lib/date";
 import type { Receipt } from "../../../lib/modelinterfaces";
@@ -31,10 +31,9 @@ export default function EditModal({
     setError("");
     setStatus("loading");
 
-    const token = getCookie("csrftoken");
+    let token = getCookie("csrftoken");
     if (!token) {
-      setError("Missing cookies.");
-      return;
+      token = await get_token();
     }
 
     editReceipt.last_updated = currentDateString();
@@ -48,7 +47,7 @@ export default function EditModal({
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
         body: JSON.stringify(editReceipt),
       },

@@ -3,7 +3,7 @@ import { Dialog } from "radix-ui";
 import Select from "react-select";
 
 import { useUserState } from "../../../state/authcomp";
-import { getCookie } from "../../../lib/get_token";
+import { get_token, getCookie } from "../../../lib/get_token";
 import type { ComparedItem } from "../../../lib/modelinterfaces";
 
 import { IoClose } from "react-icons/io5";
@@ -65,10 +65,9 @@ export default function CompareModal() {
       setUpdateStatus("loading");
       setError("");
 
-      const token = getCookie("csrftoken");
+      let token = getCookie("csrftoken");
       if (!token) {
-        setError("Missing cookies.");
-        return;
+        token = await get_token();
       }
 
       const res = await fetch(
@@ -78,7 +77,7 @@ export default function CompareModal() {
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": token,
+            "X-CSRFToken": token ?? "",
           },
           body: JSON.stringify({
             ...receiptItem,
@@ -105,10 +104,9 @@ export default function CompareModal() {
         setError("");
         setComparisonData([]);
 
-        const token = getCookie("csrftoken");
+        let token = getCookie("csrftoken");
         if (!token) {
-          setError("Missing cookies.");
-          return;
+          token = await get_token();
         }
 
         const res = await fetch(
@@ -116,7 +114,7 @@ export default function CompareModal() {
           {
             credentials: "include",
             headers: {
-              "X-CSRFToken": token,
+              "X-CSRFToken": token ?? "",
             },
           },
         );

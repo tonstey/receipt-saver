@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Dialog } from "radix-ui";
 
-import { getCookie } from "../../../lib/get_token";
+import { get_token, getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
 import type { Receipt } from "../../../lib/modelinterfaces";
 
@@ -28,11 +28,9 @@ export default function DeleteModal({
     setError("");
     setStatus("loading");
 
-    const token = getCookie("csrftoken");
-
+    let token = getCookie("csrftoken");
     if (!token) {
-      setError("Missing cookies.");
-      return;
+      token = await get_token();
     }
 
     const res = await fetch(
@@ -43,7 +41,7 @@ export default function DeleteModal({
         method: "DELETE",
         credentials: "include",
         headers: {
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
       },
     );
@@ -63,7 +61,7 @@ export default function DeleteModal({
         method: "GET",
         credentials: "include",
         headers: {
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
       },
     );

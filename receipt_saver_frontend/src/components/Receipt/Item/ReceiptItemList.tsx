@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import ReceiptItem from "./ReceiptItem";
-import { getCookie } from "../../../lib/get_token";
+import { get_token, getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
 
 import { AiOutlineLoading } from "react-icons/ai";
@@ -22,10 +22,9 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
       setError("");
       setStatus("loading");
 
-      const token = getCookie("csrftoken");
+      let token = getCookie("csrftoken");
       if (!token) {
-        setError("Missing cookies.");
-        return;
+        token = await get_token();
       }
 
       const res = await fetch(
@@ -33,7 +32,7 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
         {
           credentials: "include",
           headers: {
-            "X-CSRFToken": token,
+            "X-CSRFToken": token ?? "",
           },
         },
       );
@@ -56,10 +55,9 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
     setError("");
     setStatus("loading");
 
-    const token = getCookie("csrftoken");
+    let token = getCookie("csrftoken");
     if (!token) {
-      setError("Missing cookies.");
-      return;
+      token = await get_token();
     }
 
     const res = await fetch(
@@ -68,7 +66,7 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
         method: "POST",
         credentials: "include",
         headers: {
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
       },
     );

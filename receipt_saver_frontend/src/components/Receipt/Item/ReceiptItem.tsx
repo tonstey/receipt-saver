@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useUserState } from "../../../state/authcomp";
-import { getCookie } from "../../../lib/get_token";
+import { get_token, getCookie } from "../../../lib/get_token";
 import { baseItem, type Item } from "../../../lib/modelinterfaces";
 
 import { AiOutlineLoading } from "react-icons/ai";
@@ -35,10 +35,9 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
       setEditItem((prev) => ({ ...prev, quantity: 0 }));
     }
 
-    const token = getCookie("csrftoken");
+    let token = getCookie("csrftoken");
     if (!token) {
-      setError("Missing cookies.");
-      return;
+      token = await get_token();
     }
 
     const res = await fetch(
@@ -48,7 +47,7 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
         body: JSON.stringify(editItem),
       },
@@ -71,10 +70,9 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
     setError("");
     setStatus("loading");
 
-    const token = getCookie("csrftoken");
+    let token = getCookie("csrftoken");
     if (!token) {
-      setError("Missing cookies.");
-      return;
+      token = await get_token();
     }
 
     const res = await fetch(
@@ -83,7 +81,7 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
         method: "DELETE",
         credentials: "include",
         headers: {
-          "X-CSRFToken": token,
+          "X-CSRFToken": token ?? "",
         },
       },
     );

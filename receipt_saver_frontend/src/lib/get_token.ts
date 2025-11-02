@@ -1,4 +1,4 @@
-export default async function get_token() {
+export async function get_token() {
   const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/csrf/`, {
     credentials: "include",
   });

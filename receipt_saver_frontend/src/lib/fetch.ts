@@ -1,9 +1,9 @@
-import { getCookie } from "./get_token";
+import { get_token, getCookie } from "./get_token";
 
 export async function getReceipts(limit: number) {
-  const token = getCookie("csrftoken");
+  let token = getCookie("csrftoken");
   if (!token) {
-    return { error: "User not detected" };
+    token = await get_token();
   }
 
   const res = await fetch(
@@ -12,7 +12,7 @@ export async function getReceipts(limit: number) {
       method: "GET",
       credentials: "include",
       headers: {
-        "X-CSRFToken": token,
+        "X-CSRFToken": token ?? "",
       },
     },
   );

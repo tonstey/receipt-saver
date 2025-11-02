@@ -61,7 +61,7 @@ def read_receipt(file):
                             )
         
         content = json.loads(r.content.decode())
-        print(content)
+
         if content['OCRExitCode'] == 1 or content['OCRExitCode'] == 2:
             lines = []
             try:

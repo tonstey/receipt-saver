@@ -30,8 +30,6 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
       let token = getCookie("csrftoken");
       if (!token) {
         token = await get_token();
-        setStatus("idle");
-        return;
       }
 
       const res = await fetch(
@@ -40,7 +38,7 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
           method: "GET",
           credentials: "include",
           headers: {
-            "X-CSRFTOKEN": token,
+            "X-CSRFTOKEN": token ?? "",
           },
         },
       );

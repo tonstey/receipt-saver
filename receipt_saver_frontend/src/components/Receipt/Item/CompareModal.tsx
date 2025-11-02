@@ -160,7 +160,7 @@ export default function CompareModal() {
               </Dialog.Close>
             </div>
 
-            {/* Body — scrollable */}
+            {/* Body */}
             <div className="flex-1">
               {compareStatus === "loading" ? (
                 ""

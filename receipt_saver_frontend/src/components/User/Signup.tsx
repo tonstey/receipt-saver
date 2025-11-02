@@ -92,7 +92,6 @@ export default function Signup({ setFocus }: { setFocus: Function }) {
 
   return (
     <div className="relative">
-      {/* Loading spinner */}
       {status === "loading" && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80">
           <AiOutlineLoading className="animate-spin text-6xl text-blue-600" />

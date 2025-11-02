@@ -111,13 +111,11 @@ export default function HomePage({
   return (
     <>
       <div className="relative mb-12 flex w-full flex-col items-center gap-10">
-        {/* BEGIN OFF DOM ELEMENTS */}
         <Authentication />
         <IoMenu
           className="absolute top-2 left-5 rounded-xl text-5xl hover:cursor-pointer hover:bg-indigo-200"
           onClick={() => toggleSidebar((prev: boolean) => !prev)}
         />
-        {/* END OFF DOM ELEMENTS */}
 
         <div className="mt-16 flex flex-col items-center gap-2">
           <h1 className="text-center text-5xl font-extrabold">

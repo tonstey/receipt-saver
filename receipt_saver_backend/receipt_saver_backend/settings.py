@@ -26,7 +26,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','*']
+ALLOWED_HOSTS = ['cartcompass.onrender.com','localhost', '127.0.0.1',]
 
 
 # Application definition
@@ -131,7 +131,8 @@ AUTH_USER_MODEL = 'receipts.CustomUser'
 
 
 CORS_ALLOW_CREDENTIALS = True 
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173","http://127.0.0.1:5173",]
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173","http://127.0.0.1:5173","http://cartcompass.vercel.app",
+    "https://cartcompass.vercel.app",]
 
 
 
@@ -149,6 +150,8 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://cartcompass.vercel.app",
+    "https://cartcompass.vercel.app",
 ]
 
 
@@ -161,3 +164,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
 }
+
+# DEPLOYMENT
+import os
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

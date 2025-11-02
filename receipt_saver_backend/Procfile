@@ -1,0 +1,1 @@
+web: gunicorn receipt_saver_backend.wsgi

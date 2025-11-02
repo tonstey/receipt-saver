@@ -38,6 +38,7 @@ def verifyPassword(password:str) -> bool:
 
 def read_receipt(file):
     try:
+        # COMPRESS IMAGE
         image = Image.open(file)
         if image.mode == "RGBA":
             image = image.convert("RGB")
@@ -46,6 +47,7 @@ def read_receipt(file):
         image.save(buffer, format="JPEG")
         buffer.seek(0)
 
+        # BEGIN API REQUEST
         api_key = config("OCR_API")
         payload = {
                 'apikey': api_key,
@@ -54,7 +56,7 @@ def read_receipt(file):
                 }
     
         r = requests.post('https://api.ocr.space/parse/image',
-                            files={'file': buffer},
+                            files={'file': ('receipt.jgp', buffer, 'image/jpeg')},
                             data=payload, timeout=30
                             )
         
@@ -77,7 +79,6 @@ def read_receipt(file):
         print(str(e))
         return {"success": False, "message": "There was an error in the OCR API."}
     except Exception as e:
-        # catch Pillow or any other error
         print("Unexpected error in read_receipt:", str(e))
         return {"success": False, "message": "Error while reading receipt."}
     

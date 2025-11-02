@@ -3,8 +3,8 @@ import { useState } from "react";
 import { getCookie } from "../../../lib/get_token";
 import { useNavigate } from "react-router";
 import type { Receipt } from "../../../lib/modelinterfaces";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useUserState } from "../../../state/authcomp";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function DeleteModal({
   receipt,
@@ -88,16 +88,16 @@ export default function DeleteModal({
 
           {/* Modal Content */}
           <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg">
-            {status === "idle" ? (
-              <div className="flex flex-col items-center">
-                <div className="flex w-full flex-col">
-                  <Dialog.Title className="mb-[-2px] text-2xl font-bold">
-                    Delete Confirmation
-                  </Dialog.Title>
-                  <Dialog.Description>
-                    Are you sure you would like to delete this receipt?
-                  </Dialog.Description>
-                </div>
+            <div className="flex flex-col items-center">
+              <div className="flex w-full flex-col">
+                <Dialog.Title className="mb-[-2px] text-2xl font-bold">
+                  Delete Confirmation
+                </Dialog.Title>
+                <Dialog.Description>
+                  Are you sure you would like to delete this receipt?
+                </Dialog.Description>
+              </div>
+              {status === "idle" ? (
                 <div className="mt-4 flex w-full justify-end gap-2">
                   <div
                     className="rounded-xl border border-gray-600 px-2 py-1 text-lg hover:cursor-pointer hover:bg-gray-200"
@@ -112,13 +112,13 @@ export default function DeleteModal({
                     Delete Receipt
                   </div>
                 </div>
-                {error ? <div className="text-red-600">{error}</div> : ""}
-              </div>
-            ) : (
-              <div>
-                <DotLottieReact src="/loading.lottie" loop autoplay />
-              </div>
-            )}
+              ) : (
+                <div>
+                  <AiOutlineLoading className="mt-4 w-full animate-spin text-6xl text-blue-600" />
+                </div>
+              )}
+              {error ? <div className="text-red-600">{error}</div> : ""}
+            </div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

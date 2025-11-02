@@ -13,7 +13,7 @@ import { baseUser } from "./lib/modelinterfaces";
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(
-    window.innerWidth > 1235
+    window.innerWidth >= 640,
   );
 
   const user = useUserState((state) => state.user);
@@ -35,7 +35,7 @@ function App() {
             "Content-Type": "application/json",
             "X-CSRFToken": token,
           },
-        }
+        },
       );
 
       if (!res.ok) {
@@ -51,8 +51,8 @@ function App() {
 
   return (
     <>
-      <div className="w-screen h-screen flex">
-        <Sidebar isVisible={sidebarVisible} />
+      <div className="flex h-screen w-screen">
+        <Sidebar isVisible={sidebarVisible} toggleSidebar={setSidebarVisible} />
         <div className="flex-1 overflow-y-auto">
           <Routes>
             <Route

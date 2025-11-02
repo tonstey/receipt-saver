@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { FiPlus } from "react-icons/fi";
 import { getCookie } from "../../../lib/get_token";
 import ReceiptItem from "./ReceiptItem";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useUserState } from "../../../state/authcomp";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
@@ -84,10 +84,10 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
 
   return (
     <>
-      {status === "idle" ? (
-        <div className="flex w-[60rem] flex-col gap-4 rounded-xl bg-white p-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold">Items</h1>
+      <div className="mb-16 flex w-[20rem] flex-col gap-4 rounded-xl bg-white p-6 md:w-[40rem] lg:w-[60rem]">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold">Items</h1>
+          {status === "idle" ? (
             <button
               className="flex items-center gap-3 rounded-lg bg-black px-4 py-2 text-lg text-white hover:cursor-pointer hover:bg-gray-700"
               onClick={() => addItem()}
@@ -95,7 +95,11 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
               <FiPlus />
               Add Item
             </button>
-          </div>
+          ) : (
+            ""
+          )}
+        </div>
+        {status === "idle" ? (
           <div className="flex flex-col gap-4">
             {itemList.length > 0 ? (
               itemList.map((item) => (
@@ -107,13 +111,13 @@ export default function ReceiptItemList({ receiptID }: { receiptID: string }) {
               </h1>
             )}
           </div>
-          {error ? <div className="text-red-600">{error}</div> : ""}
-        </div>
-      ) : (
-        <div>
-          <DotLottieReact src="/loading.lottie" loop autoplay />
-        </div>
-      )}
+        ) : (
+          <div>
+            <AiOutlineLoading className="w-full animate-spin text-6xl text-blue-600" />
+          </div>
+        )}
+        {error ? <div className="text-red-600">{error}</div> : ""}
+      </div>
     </>
   );
 }

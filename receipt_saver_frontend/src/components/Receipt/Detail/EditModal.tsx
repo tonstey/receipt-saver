@@ -5,7 +5,7 @@ import { getCookie } from "../../../lib/get_token";
 import { useUserState } from "../../../state/authcomp";
 import type { Receipt } from "../../../lib/modelinterfaces";
 import { currentDateString } from "../../../lib/date";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function EditModal({
   receipt,
@@ -79,17 +79,17 @@ export default function EditModal({
 
           {/* Modal Content */}
           <Dialog.Content className="fixed top-1/2 left-1/2 z-50 w-[32rem] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg">
-            {status === "idle" ? (
-              <div className="flex flex-col items-center justify-between">
-                <div className="flex w-full flex-col">
-                  <Dialog.Title className="mb-[-8px] text-2xl font-bold">
-                    Edit Receipt
-                  </Dialog.Title>
-                  <Dialog.Description className="mt-2 text-sm">
-                    Update the name of the receipt, the store name, the store
-                    address, and the receipt date.
-                  </Dialog.Description>
-                </div>
+            <div className="flex flex-col items-center justify-between">
+              <div className="flex w-full flex-col">
+                <Dialog.Title className="mb-[-8px] text-2xl font-bold">
+                  Edit Receipt
+                </Dialog.Title>
+                <Dialog.Description className="mt-2 text-sm">
+                  Update the name of the receipt, the store name, the store
+                  address, and the receipt date.
+                </Dialog.Description>
+              </div>
+              {status === "idle" ? (
                 <div className="mt-6 flex w-full flex-col gap-2">
                   <div>
                     <h1 className="font-semibold">Receipt Name</h1>
@@ -184,13 +184,13 @@ export default function EditModal({
                     </div>
                   </div>
                 </div>
-                {error ? <div className="text-red-600">{error}</div> : ""}
-              </div>
-            ) : (
-              <div>
-                <DotLottieReact src="/loading.lottie" loop autoplay />
-              </div>
-            )}
+              ) : (
+                <div>
+                  <AiOutlineLoading className="w-full animate-spin text-6xl text-blue-600" />
+                </div>
+              )}
+              {error ? <div className="text-red-600">{error}</div> : ""}
+            </div>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

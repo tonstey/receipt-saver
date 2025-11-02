@@ -69,3 +69,21 @@ export const baseItem: Item = {
   stores_checked: {},
   last_updated: "",
 };
+
+export interface ComparedItem {
+  name: string;
+  productLink: string;
+  price: number;
+  imgURL: string;
+  rating: number;
+  reviewsAmount: number;
+}
+
+export const BaseComparedItem: ComparedItem = {
+  name: "",
+  productLink: "",
+  price: 0.0,
+  imgURL: "",
+  rating: 0,
+  reviewsAmount: 0,
+};

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router";
 
 import { getCookie } from "../../lib/get_token";
 
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { FaArrowLeftLong, FaCheck } from "react-icons/fa6";
 import { useUserState } from "../../state/authcomp";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ConfirmImage({
   image,
@@ -130,7 +130,7 @@ export default function ConfirmImage({
         </div>
       ) : (
         <div>
-          <DotLottieReact src="loading.lottie" autoplay />
+          <AiOutlineLoading className="animate-spin text-8xl text-blue-600" />
         </div>
       )}
     </>

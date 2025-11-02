@@ -4,9 +4,9 @@ import { useUserState } from "../../../state/authcomp";
 
 import { FaRegTrashAlt, FaCheck } from "react-icons/fa";
 import { MdOutlineModeEditOutline } from "react-icons/md";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { baseItem, type Item } from "../../../lib/modelinterfaces";
 import { getCookie } from "../../../lib/get_token";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
@@ -106,20 +106,20 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
 
   return (
     <>
-      <div className="flex items-center justify-between gap-3 rounded-xl bg-gray-100 p-4">
+      <div className="flex flex-col items-center justify-between gap-3 rounded-xl bg-gray-100 p-4 md:flex-row">
         {isEditting ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex w-[16rem] flex-1 flex-col items-center gap-3 md:items-start">
             <input
-              className="rounded-lg border border-gray-300 bg-white p-1 px-3 text-lg"
+              className="w-full rounded-lg border border-gray-300 bg-white p-1 px-3 text-lg"
               value={editItem.name}
               onChange={(e) =>
                 setEditItem((prev) => ({ ...prev, name: e.target.value }))
               }
             ></input>
-            <div className="flex items-center gap-3">
+            <div className="flex w-full items-center gap-3">
               $
               <input
-                className="rounded-lg border border-gray-300 bg-white p-1 text-end"
+                className="w-[4rem] rounded-lg border border-gray-300 bg-white p-1 text-end md:w-1/3"
                 type="number"
                 min={0}
                 value={editItem.price}
@@ -135,7 +135,7 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
               ></input>
               x
               <input
-                className="rounded-lg border border-gray-300 bg-white p-1 text-end"
+                className="w-[4rem] rounded-lg border border-gray-300 bg-white p-1 text-end md:w-1/3"
                 type="number"
                 min={1}
                 step={1}
@@ -154,9 +154,11 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
             </div>
           </div>
         ) : (
-          <div>
+          <div className="text-center md:text-start">
             <div className="flex items-center gap-4">
-              <h1 className="text-lg font-semibold">{receiptItem.name}</h1>
+              <h1 className="w-full text-lg font-semibold">
+                {receiptItem.name}
+              </h1>
             </div>
             <h1>
               ${receiptItem.price} x {receiptItem.quantity} = $
@@ -173,7 +175,7 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
 
         {status === "idle" ? (
           <div>
-            <div className="flex gap-3">
+            <div className="flex w-fit gap-3">
               <button
                 className={`rounded-lg bg-gray-300 p-2 text-2xl hover:cursor-pointer ${
                   isEditting ? "hover:bg-green-200" : "hover:bg-blue-200"
@@ -195,7 +197,7 @@ export default function ReceiptItem({ receiptItem }: { receiptItem: Item }) {
           </div>
         ) : (
           <div>
-            <DotLottieReact src="/loading.lottie" loop autoplay />
+            <AiOutlineLoading className="w-full animate-spin text-5xl font-extrabold text-blue-600" />
           </div>
         )}
       </div>

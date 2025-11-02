@@ -4,15 +4,22 @@ import { IoCameraOutline } from "react-icons/io5";
 import { LuReceipt } from "react-icons/lu";
 
 import { useUserState } from "../../state/authcomp.tsx";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import SidebarReceipt from "./SidebarReceipt";
 import Authentication from "../User/Authentication";
 import { getCookie } from "../../lib/get_token.ts";
 import { useEffect, useState } from "react";
 import { getReceipts } from "../../lib/fetch.ts";
 import { baseUser } from "../../lib/modelinterfaces.ts";
+import { AiOutlineLoading } from "react-icons/ai";
+import { RxCross2 } from "react-icons/rx";
 
-export default function Sidebar({ isVisible }: { isVisible: boolean }) {
+export default function Sidebar({
+  isVisible,
+  toggleSidebar,
+}: {
+  isVisible: boolean;
+  toggleSidebar: Function;
+}) {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState("");
   const [limit, setLimit] = useState(10);
@@ -46,6 +53,7 @@ export default function Sidebar({ isVisible }: { isVisible: boolean }) {
 
   const attemptNavigation = (user: any) => {
     if (user.username) {
+      toggleSidebar(false);
       navigate("/scanreceipt");
     } else {
       openAuth();
@@ -80,10 +88,14 @@ export default function Sidebar({ isVisible }: { isVisible: boolean }) {
   return (
     <>
       <div
-        className={`flex h-full w-68 flex-col items-center gap-4 bg-white p-4 transition-all duration-500 ease-in ${
+        className={`relative flex h-full w-full flex-col items-center gap-4 bg-white p-4 transition-all duration-500 ease-in sm:w-68 ${
           isVisible ? "" : "hidden"
         }`}
       >
+        <RxCross2
+          className="absolute right-2 rounded-lg text-3xl font-bold hover:cursor-pointer hover:bg-gray-300 sm:hidden"
+          onClick={() => toggleSidebar(false)}
+        />
         <Authentication />
         <div className="flex items-center gap-2">
           <LuReceipt className="text-2xl text-blue-600" />
@@ -129,14 +141,18 @@ export default function Sidebar({ isVisible }: { isVisible: boolean }) {
 
           {status === "loading" ? (
             <div>
-              <DotLottieReact src="/loading.lottie" loop autoplay />
+              <AiOutlineLoading className="animate-spin text-6xl text-blue-600" />
             </div>
           ) : error ? (
             <div className="text-center text-red-600">{error}</div>
           ) : receiptList.length > 0 ? (
             <div className="flex h-full w-full flex-col items-center gap-2 overflow-y-auto">
               {receiptList.map((item: any) => (
-                <SidebarReceipt key={item.receipt_uuid} receipt={item} />
+                <SidebarReceipt
+                  key={item.receipt_uuid}
+                  receipt={item}
+                  toggleSidebar={toggleSidebar}
+                />
               ))}
               {limit < user?.num_receipts ? (
                 <div

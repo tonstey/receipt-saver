@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useUserState } from "../../../state/authcomp";
 
 import DeleteModal from "./DeleteModal";
@@ -7,9 +7,9 @@ import EditModal from "./EditModal";
 import { getCookie } from "../../../lib/get_token";
 import { stringToDate } from "../../../lib/date";
 
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
   const [openEdit, setOpenEdit] = useState(false);
@@ -20,8 +20,6 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
   const receipt = useUserState((state) => state.displayReceipt);
   const setReceipt = useUserState((state) => state.setDisplayReceipt);
   const refresh = useUserState((state) => state.refreshPlaceholder);
-
-  const loadingRef = useRef<any>(null);
 
   useEffect(() => {
     const getReceipt = async () => {
@@ -62,7 +60,7 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
 
   return (
     <>
-      <div className="mt-16 flex w-[60rem] flex-col items-center justify-between rounded-lg bg-white p-6">
+      <div className="mt-16 flex w-[20rem] flex-col items-center justify-between rounded-lg bg-white p-6 md:w-[40rem] lg:w-[60rem]">
         <DeleteModal
           receipt={receipt}
           deleteModalStatus={openDelete}
@@ -76,9 +74,11 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
 
         {status === "idle" ? (
           <div className="w-full">
-            <div className="flex justify-between">
-              <h1 className="w-full text-3xl font-bold">{receipt.name}</h1>
-              <div className="flex gap-2">
+            <div className="mb-4 flex items-start justify-between">
+              <h1 className="w-full text-3xl font-bold break-words">
+                {receipt.name}
+              </h1>
+              <div className="flex flex-shrink-0 items-center gap-2">
                 <h1
                   className="rounded-2xl bg-indigo-400 p-2 text-3xl text-white hover:cursor-pointer hover:bg-indigo-200"
                   onClick={() => setOpenEdit(true)}
@@ -94,7 +94,7 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
               </div>
             </div>
 
-            <div className="flex w-full items-center justify-between">
+            <div className="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
               <div className="flex flex-col">
                 <h1 className="text-lg text-gray-600">
                   Store: {receipt.store}
@@ -129,12 +129,7 @@ export default function ReceiptDetail({ receiptID }: { receiptID: string }) {
           </div>
         ) : (
           <div>
-            <DotLottieReact
-              src="/loading.lottie"
-              ref={loadingRef}
-              loop
-              autoplay
-            />
+            <AiOutlineLoading className="w-full animate-spin text-8xl text-blue-600" />
           </div>
         )}
 

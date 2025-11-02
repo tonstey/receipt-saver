@@ -3,8 +3,8 @@ import { useUserState } from "../../state/authcomp";
 import get_token from "../../lib/get_token";
 import { ImEye, ImEyeBlocked } from "react-icons/im";
 
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useNavigate } from "react-router";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function Login() {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
@@ -59,10 +59,20 @@ export default function Login() {
   };
 
   return (
-    <>
-      {status === "idle" ? (
+    <div className="relative">
+      {/* Overlay spinner */}
+      {status === "loading" && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80">
+          <AiOutlineLoading className="animate-spin text-6xl text-blue-600" />
+        </div>
+      )}
+
+      <div
+        className={`${status === "loading" ? "pointer-events-none opacity-50" : ""}`}
+      >
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-3">
+            {/* Username */}
             <div>
               <h1>Username</h1>
               <input
@@ -71,9 +81,10 @@ export default function Login() {
                 placeholder="Please enter your username."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-              ></input>
+              />
             </div>
 
+            {/* Password */}
             <div>
               <h1>Password</h1>
               <div className="relative">
@@ -83,7 +94,7 @@ export default function Login() {
                   placeholder="Please enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                ></input>
+                />
                 <div
                   className="absolute top-1/4 right-2 rounded p-1 text-lg hover:cursor-pointer hover:bg-gray-300"
                   onClick={() => setShowPassword((prev) => !prev)}
@@ -97,19 +108,14 @@ export default function Login() {
           <div>
             <button
               className="w-full rounded-lg bg-black py-3 text-lg font-semibold text-white hover:cursor-pointer hover:bg-gray-800"
-              onClick={() => onLogin()}
-              onKeyDown={(e) => (e.key === "Enter" ? onLogin() : "")}
+              onClick={onLogin}
             >
-              Sign In
+              Log In
             </button>
-            {error ? <div className="text-red-600"> {error} </div> : ""}
+            {error && <div className="mt-2 text-red-600">{error}</div>}
           </div>
         </div>
-      ) : (
-        <div>
-          <DotLottieReact src="/loading.lottie" loop autoplay />
-        </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }

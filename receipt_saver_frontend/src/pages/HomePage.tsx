@@ -13,6 +13,7 @@ import { useUserState } from "../state/authcomp";
 import { useNavigate } from "react-router";
 import { getCookie } from "../lib/get_token";
 import { type Receipt } from "../lib/modelinterfaces";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function HomePage({
   toggleSidebar,
@@ -121,8 +122,10 @@ export default function HomePage({
         {/* END OFF DOM ELEMENTS */}
 
         <div className="mt-16 flex flex-col items-center gap-2">
-          <h1 className="text-5xl font-extrabold">Smart Receipt Management</h1>
-          <h1 className="text-lg text-gray-700">
+          <h1 className="text-center text-5xl font-extrabold">
+            Smart Receipt Management
+          </h1>
+          <h1 className="text-center text-lg text-gray-700">
             Scan, organize, and compare your purchases across different stores.
             Never lose track of your spending again
           </h1>
@@ -196,7 +199,9 @@ export default function HomePage({
                 )}
               </div>
             ) : (
-              ""
+              <div>
+                <AiOutlineLoading className="mt-4 w-full animate-spin text-6xl text-blue-600" />
+              </div>
             )}
             {receiptError ? (
               <div className="text-center text-red-600">{receiptError}</div>
@@ -215,7 +220,7 @@ export default function HomePage({
                       ${figures.monthlyspent.toFixed(2)}
                     </h1>
                   </div>
-                  <h1 className="text-sm font-semibold text-gray-600">
+                  <h1 className="text-center text-sm font-semibold text-gray-600">
                     Total Spent This Month
                   </h1>
                 </div>
@@ -227,7 +232,7 @@ export default function HomePage({
                       {user.num_receipts}
                     </h1>
                   </div>
-                  <h1 className="text-sm font-semibold text-gray-600">
+                  <h1 className="text-center text-sm font-semibold text-gray-600">
                     Receipts Scanned
                   </h1>
                 </div>
@@ -239,13 +244,15 @@ export default function HomePage({
                       ${figures.savings.toFixed(2)}
                     </h1>
                   </div>
-                  <h1 className="text-sm font-semibold text-gray-600">
+                  <h1 className="text-center text-sm font-semibold text-gray-600">
                     Potential Savings Found
                   </h1>
                 </div>
               </div>
             ) : (
-              ""
+              <div>
+                <AiOutlineLoading className="mt-4 w-full animate-spin text-6xl text-blue-600" />
+              </div>
             )}
             {figureError ? (
               <div className="mt-2 text-center text-red-600">{figureError}</div>

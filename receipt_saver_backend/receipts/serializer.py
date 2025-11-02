@@ -86,6 +86,12 @@ class ReceiptSerializer(serializers.ModelSerializer):
                     # If no ID provided, create new item
                     Item.objects.create(receipt=instance, **item_data)
 
+        if hasattr(instance, "subtotal") and hasattr(instance, "taxpercent"):
+            instance.tax = instance.subtotal * instance.taxpercent /100.0
+            instance.total = instance.subtotal + instance.tax
+            instance.save(update_fields=["tax", "total"])
+
+
         return instance
 
 class FileSerializer(serializers.Serializer):

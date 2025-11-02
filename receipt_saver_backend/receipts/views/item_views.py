@@ -2,6 +2,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
+
 from django.utils import timezone
 
 from ..models import CustomUser, Receipt, Item
@@ -9,6 +12,7 @@ from ..serializer import ItemSerializer
 from ..storescrape import Scraper
 
 @api_view(["POST"])
+@ratelimit(key="ip", rate="5/s", block=True)
 def create_item(request, receipt_id):
     try:
         if not request.user.is_authenticated or not request.user:
@@ -35,12 +39,17 @@ def create_item(request, receipt_id):
         receipt.num_items += 1
         receipt.save()
         return Response({"success":True }, status=status.HTTP_201_CREATED)
+    
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
     except Receipt.DoesNotExist:
         return Response({"error": "Receipt not found"}, status=status.HTTP_404_NOT_FOUND)
-    except:
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET"])
+@ratelimit(key="ip", rate="5/s", block=True)
 def get_all_items(request, receipt_id):
     try:
         if not request.user.is_authenticated or not request.user:
@@ -56,12 +65,17 @@ def get_all_items(request, receipt_id):
         items_serialized = ItemSerializer(items, many=True)
         
         return Response({"success": True, "data": items_serialized.data}, status=status.HTTP_200_OK)
+    
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
     except Receipt.DoesNotExist:
         return Response({"error": "Searching respective receipt does not exist."}, status=status.HTTP_404_NOT_FOUND)
-    except:
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["GET", "PUT", "DELETE"])
+@ratelimit(key="ip", rate="5/s", block=True)
 def item_view(request, item_id):
     try:
         
@@ -88,8 +102,6 @@ def item_view(request, item_id):
         elif request.method == "PUT":
             item_data = request.data
   
-            
-
             item_serializer = ItemSerializer(item, data = item_data, partial=True)
   
             if not item_serializer.is_valid():
@@ -122,36 +134,39 @@ def item_view(request, item_id):
 
         return Response({"error": "Invalid method called."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
-
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
     except Item.DoesNotExist:
         return Response({"error": "Item does not exist."}, status=status.HTTP_404_NOT_FOUND)
-    except:
-
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
 @api_view(["GET"])
+@ratelimit(key="ip", rate="1/s", block=True)
 def check_stores(request):
     try:
-        if not request.user.is_authenticated or not request.user:
-            return Response({"error": "Please log in."}, status=status.HTTP_401_UNAUTHORIZED)
+        #if not request.user.is_authenticated or not request.user:
+            #return Response({"error": "Please log in."}, status=status.HTTP_401_UNAUTHORIZED)
 
         if request.method == "GET":
             store = request.query_params.get("store")
             item = request.query_params.get("item")
-            print(store)
-            print(item)
 
             if not store:
                 return Response({"error": "Missing store name to compare."}, status=status.HTTP_400_BAD_REQUEST)
-            print("gay")
+        
             storeChecker = Scraper(store, item)
-            print("Bitch")
+     
             result = storeChecker.checkStore()
-            print(result)
-            print("Chat")
-            return Response(result, status = status.HTTP_400_BAD_REQUEST if result.error else status.HTTP_200_OK )
+
+            return Response(result, status = status.HTTP_400_BAD_REQUEST if "error" in result else status.HTTP_200_OK )
 
         return Response({"error": ""}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    except:
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+   
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)

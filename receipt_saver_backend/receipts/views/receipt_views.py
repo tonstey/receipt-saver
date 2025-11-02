@@ -3,12 +3,16 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
 
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
+
 from ..models import Receipt
 from ..serializer import ReceiptSerializer, FileSerializer
 
 from ..methods import read_receipt, ReceiptParser
 
 @api_view(["GET"])
+@ratelimit(key="ip", rate="5/s", block=True)
 def get_receipts(request):
     try:
         if not request.user or not request.user.is_authenticated:
@@ -26,12 +30,15 @@ def get_receipts(request):
         receipts = Receipt.objects.filter(user=request.user).order_by(f"-{dateordertype}").values("receipt_uuid","name","date_purchased","num_items","total")[0:limit] 
 
         return Response(receipts, status=status.HTTP_200_OK)
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
     except Exception as e:
-        return Response({"error": "Internal server error, please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(["POST"])
 @parser_classes([MultiPartParser, FormParser])
+@ratelimit(key="ip", rate="1/s", block=True)
 def create_receipt(request):
     try:
       if not request.user.is_authenticated:
@@ -68,8 +75,6 @@ def create_receipt(request):
       subtotal, tax, total = receipt_parser.extract_totals(text)
       
       receipt_input = {
-          
-      
           "name": "Unnamed Receipt",
           "store": receipt_parser.extract_store_name(text),
           "address": receipt_parser.extract_address(text),
@@ -95,11 +100,15 @@ def create_receipt(request):
       request.user.save()
       return Response(receipt.data,status=status.HTTP_201_CREATED)
     
-     
-    except:
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS) 
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(["GET", "PUT", "DELETE"])
+@ratelimit(key="ip", rate="5/s", block=True)
 def receipt_view(request, receipt_id):
     try:
         if not request.user.is_authenticated:
@@ -139,9 +148,10 @@ def receipt_view(request, receipt_id):
             return Response({"success": True},status=status.HTTP_200_OK)
         
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
     except Receipt.DoesNotExist:
         return Response({"error": "Receipt not found"}, status=status.HTTP_404_NOT_FOUND)
-
-    except:
-   
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)

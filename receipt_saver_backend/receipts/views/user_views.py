@@ -1,10 +1,18 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_protect
+from django.db import connection
+
+
+
 from django.utils.timezone import now
 from dateutil.relativedelta import relativedelta
+
+from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
 
 from ..models import CustomUser, Receipt, Item
 from ..serializer import UserSerializer
@@ -12,6 +20,7 @@ from ..serializer import UserSerializer
 from ..methods import verifyPassword
 
 @api_view(["POST"])
+@ratelimit(key="ip", rate="1/s", block=True)
 def create_user(request):
     try:
         email = request.data.get("email")
@@ -42,11 +51,15 @@ def create_user(request):
             return Response({"success": True}, status=status.HTTP_201_CREATED)
 
         return Response({"error": user.errors}, status=status.HTTP_400_BAD_REQUEST)
-    except:
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    except Exception as e:
+        print(str(e))
         return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@csrf_protect
 @api_view(["POST", "GET", "PUT", "DELETE"])
+@csrf_protect
+@ratelimit(key="ip", rate="5/s", block=True)
 def user_view(request):
     try:   
         if request.method == "POST":
@@ -85,13 +98,16 @@ def user_view(request):
             request.user.delete()
             return Response({"message": "Account deleted successfully"},status=status.HTTP_204_NO_CONTENT)
       
-    except:
-        return Response({"error":"Internal server error, please try again later."},status=status.HTTP_400_BAD_REQUEST)
-  
+        return Response({"error": "Invalid request method."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
-    return Response(data=serializer.data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 @api_view(["GET"])
+@ratelimit(key="ip", rate="5/s", block=True)
 def figures(request):
     try:
         if not request.user or not request.user.is_authenticated:
@@ -105,16 +121,26 @@ def figures(request):
         totalsavingssum = sum([sum(item.stores_checked.values()) for item in items])
     
         return Response({"monthlyspent": monthlysum, "savings": totalsavingssum}, status=status.HTTP_200_OK)
-    except:
-        return Response({"error": "Internal server error, please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])
+@ratelimit(key="ip", rate="1/s", block=True)
 def logout_view(request):
+    try:
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    if not request.user.is_authenticated:
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-    logout(request)
+        logout(request)
+        
+        return Response(status=status.HTTP_200_OK)
     
-    return Response(status=status.HTTP_200_OK)
+    except Ratelimited:
+        return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    except Exception as e:
+        print(str(e))
+        return Response({"error": "Internal server error, please try again later."},status=status.HTTP_500_INTERNAL_SERVER_ERROR)

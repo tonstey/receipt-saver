@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { validate } from "email-validator";
 import PasswordValidator from "password-validator";
 import PasswordChecklist from "./PasswordChecklist";
 
 import { ImEye, ImEyeBlocked } from "react-icons/im";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function Signup({ setFocus }: { setFocus: Function }) {
   const [username, setUsername] = useState("");
@@ -74,7 +74,7 @@ export default function Signup({ setFocus }: { setFocus: Function }) {
           email: email.toLowerCase(),
           password: password,
         }),
-      }
+      },
     );
 
     setStatus("idle");
@@ -90,82 +90,93 @@ export default function Signup({ setFocus }: { setFocus: Function }) {
   };
 
   return (
-    <>
-      {status === "idle" ? (
+    <div className="relative">
+      {/* Loading spinner */}
+      {status === "loading" && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80">
+          <AiOutlineLoading className="animate-spin text-6xl text-blue-600" />
+        </div>
+      )}
+
+      <div
+        className={`${status === "loading" ? "pointer-events-none opacity-50" : ""}`}
+      >
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-3">
+            {/* Username */}
             <div>
               <h1>Username</h1>
               <input
-                className="border border-gray-400 w-full rounded px-3 py-2"
+                className="w-full rounded border border-gray-400 px-3 py-2"
                 type="text"
                 placeholder="Please enter your name."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-              ></input>
+              />
             </div>
 
+            {/* Email */}
             <div>
               <h1>Email</h1>
               <input
-                className="border border-gray-400 w-full rounded px-3 py-2"
+                className="w-full rounded border border-gray-400 px-3 py-2"
                 type="email"
                 placeholder="Please enter your email."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-              ></input>
+              />
             </div>
 
+            {/* Password */}
             <div>
               <h1>Password</h1>
               <div className="relative h-fit w-full">
                 <input
-                  className="border border-gray-400 w-full rounded px-3 py-2"
+                  className="w-full rounded border border-gray-400 px-3 py-2"
                   type={showPassword ? "text" : "password"}
                   placeholder="Please enter your password."
                   value={password}
                   onChange={(e) => onPasswordChange(e.target.value)}
-                ></input>
+                />
                 <div
-                  className="absolute top-1/4 right-2 text-lg p-1 rounded hover:cursor-pointer hover:bg-gray-300"
+                  className="absolute top-1/4 right-2 rounded p-1 text-lg hover:cursor-pointer hover:bg-gray-300"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? <ImEyeBlocked /> : <ImEye />}
                 </div>
               </div>
             </div>
-            {passwordError ? (
+
+            {/* Password Requirements */}
+            {passwordError && passwordError.length > 0 && (
               <PasswordChecklist requirements={passwordError} />
-            ) : (
-              ""
             )}
+
+            {/* Confirm Password */}
             <div>
               <h1>Confirm Password</h1>
               <input
-                className="border border-gray-400 w-full rounded px-3 py-2"
+                className="w-full rounded border border-gray-400 px-3 py-2"
                 type="password"
                 placeholder="Please confirm your password."
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-              ></input>
+              />
             </div>
           </div>
 
+          {/* Submit Button */}
           <div className="flex flex-col gap-1">
             <button
-              className="bg-black rounded-lg text-white w-full py-3 font-semibold text-lg hover:bg-gray-800 hover:cursor-pointer"
-              onClick={() => onSignup()}
+              className="w-full rounded-lg bg-black py-3 text-lg font-semibold text-white hover:cursor-pointer hover:bg-gray-800"
+              onClick={onSignup}
             >
-              Sign In
+              Sign Up
             </button>
-            {error ? <div className="text-red-600"> {error} </div> : ""}
+            {error && <div className="mt-2 text-red-600">{error}</div>}
           </div>
         </div>
-      ) : (
-        <div>
-          <DotLottieReact src="/loading.lottie" loop autoplay />
-        </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }

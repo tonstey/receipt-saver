@@ -5,7 +5,13 @@ import { LuReceipt } from "react-icons/lu";
 import { stringToDate } from "../../lib/date";
 import { useUserState } from "../../state/authcomp";
 
-export default function SidebarReceipt({ receipt }: { receipt: any }) {
+export default function SidebarReceipt({
+  receipt,
+  toggleSidebar,
+}: {
+  receipt: any;
+  toggleSidebar: Function;
+}) {
   const navigate = useNavigate();
   const currProduct = useUserState((state) => state.displayReceipt);
 
@@ -19,11 +25,14 @@ export default function SidebarReceipt({ receipt }: { receipt: any }) {
               : "hover:bg-gray-100"
             : "hover:bg-gray-100"
         }`}
-        onClick={() => navigate(`/receipt/${receipt.receipt_uuid}`)}
+        onClick={() => {
+          toggleSidebar(false);
+          navigate(`/receipt/${receipt.receipt_uuid}`);
+        }}
       >
         <div className="flex items-center gap-1">
-          <LuReceipt className="text-lg" />
-          <h1 className="font-semibold">{receipt.name}</h1>
+          <LuReceipt className="flex-shrink-0 text-lg" />
+          <h1 className="overflow- truncate font-semibold">{receipt.name}</h1>
         </div>
 
         <div className="flex justify-between text-sm text-gray-600">

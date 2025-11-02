@@ -2,10 +2,10 @@ import requests
 import json
 import re
 import uuid
-import io
 
 from decouple import config
 from PIL import Image
+from io import BytesIO
 from datetime import datetime, date
 from typing import Dict, List, Optional, Any
 from .models import CustomUser, Receipt, Item
@@ -36,17 +36,17 @@ def verifyPassword(password:str) -> bool:
 
     return True, "Strong password"
 
-def compress_image(file):
-    image = Image.open(file)
-    if image.mode == "RGBA":
-        image = image.convert("RGB")
-    buffer = io.BytesIO()
-    image.save(buffer, format="JPEG", quality=70)
-    buffer.seek(0)
-    return buffer
-
 def read_receipt(file):
     try:
+        
+        image = Image.open(file)
+        if image.mode == "RGBA":
+            image = image.convert("RGB")
+
+        buffer = BytesIO()
+        image.save(buffer, format="JPEG")
+        buffer.seek(0)
+
         api_key = config("OCR_API")
         payload = {
                 'apikey': api_key,
@@ -55,7 +55,7 @@ def read_receipt(file):
                 }
     
         r = requests.post('https://api.ocr.space/parse/image',
-                            files={'file': file},
+                            files={'file': buffer},
                             data=payload, timeout=30
                             )
         
@@ -71,11 +71,16 @@ def read_receipt(file):
                 return {"success": False, "message": "Lines do not exist in image."}
         else:
             return {"success": False, "message": content.get('ErrorMessage', 'Unknown error')}
+    
     except requests.exceptions.Timeout:
         return {"success": False, "message" : "OCR request timed out"}
     except requests.exceptions.RequestException as e:
         print(str(e))
         return {"success": False, "message": "There was an error in the OCR API."}
+    except Exception as e:
+        # catch Pillow or any other error
+        print("Unexpected error in read_receipt:", str(e))
+        return {"success": False, "message": "Error while reading receipt."}
     
 class ReceiptParser:
     

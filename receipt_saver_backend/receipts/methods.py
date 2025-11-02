@@ -38,7 +38,7 @@ def verifyPassword(password:str) -> bool:
 
 def read_receipt(file):
     try:
-        
+        print("got file)")
         image = Image.open(file)
         if image.mode == "RGBA":
             image = image.convert("RGB")
@@ -46,7 +46,7 @@ def read_receipt(file):
         buffer = BytesIO()
         image.save(buffer, format="JPEG")
         buffer.seek(0)
-
+        print("convert file")
         api_key = config("OCR_API")
         payload = {
                 'apikey': api_key,
@@ -60,7 +60,7 @@ def read_receipt(file):
                             )
         
         content = json.loads(r.content.decode())
-        
+        print("got content")
         if content['OCRExitCode'] == 1 or content['OCRExitCode'] == 2:
             lines = []
             try:

@@ -9,7 +9,7 @@ from django_ratelimit.exceptions import Ratelimited
 from ..models import Receipt
 from ..serializer import ReceiptSerializer, FileSerializer
 
-from ..methods import read_receipt, ReceiptParser
+from ..methods import compress_image, read_receipt, ReceiptParser
 
 @api_view(["GET"])
 @ratelimit(key="ip", rate="5/s", block=True)
@@ -41,64 +41,65 @@ def get_receipts(request):
 @ratelimit(key="ip", rate="1/s", block=True)
 def create_receipt(request):
     try:
-      if not request.user.is_authenticated:
-              return Response({"error": "Please log in."}, status=status.HTTP_401_UNAUTHORIZED)
+        if not request.user.is_authenticated:
+            return Response({"error": "Please log in."}, status=status.HTTP_401_UNAUTHORIZED)
   ########## BEGIN FILE PROCESSING
 
-      if "file" not in request.data:
-          return Response({"error": "No existing file"}, status=status.HTTP_400_BAD_REQUEST)
+        if "file" not in request.data:
+            return Response({"error": "No existing file"}, status=status.HTTP_400_BAD_REQUEST)
 
-      serializer = FileSerializer(data = request.data)
+        serializer = FileSerializer(data = request.data)
 
-      if not serializer.is_valid():
-          return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        if not serializer.is_valid():
+            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-      valid_file = request.FILES["file"]
-    
-      if valid_file.name.split(".")[-1].lower() not in ["jpg", "jpeg", "png", "pdf", "bmp", "tiff", "gif"]:
-          return Response({"error": "Invalid file type, please input files in the form of jpg, jpeg, png, pdf, bmp, tiff, or gif."}, status=status.HTTP_400_BAD_REQUEST)
+        valid_file = request.FILES["file"]
 
-      if valid_file.size > 1024 * 1024:
-          return Response({"error": "File size is too large."}, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
+        if valid_file.name.split(".")[-1].lower() not in ["jpg", "jpeg", "png", "pdf", "bmp", "tiff", "gif"]:
+            return Response({"error": "Invalid file type, please input files in the form of jpg, jpeg, png, pdf, bmp, tiff, or gif."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if valid_file.size > 1024 * 1024:
+            return Response({"error": "File size is too large."}, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
   ########## END FILE PROCESSING
 
-  ########## BEGIN TEXT PROCESSING    
-      image_text = read_receipt(valid_file)
+  ########## BEGIN TEXT PROCESSING
+        compress_file = compress_image(valid_file)    
+        image_text = read_receipt(compress_file)
       
-      if not image_text["success"]:
-          return Response({"error": "Unable to convert image to text, please try again later."}, status=status.HTTP_400_BAD_REQUEST)
+        if not image_text["success"]:
+            return Response({"error": "Unable to convert image to text, please try again later."}, status=status.HTTP_400_BAD_REQUEST)
 
-      text = image_text["data"]
+        text = image_text["data"]
+        
+        receipt_parser = ReceiptParser()
     
-      receipt_parser = ReceiptParser()
-    
-      subtotal, tax, total = receipt_parser.extract_totals(text)
-      
-      receipt_input = {
-          "name": "Unnamed Receipt",
-          "store": receipt_parser.extract_store_name(text),
-          "address": receipt_parser.extract_address(text),
-          "date_purchased": receipt_parser.extract_date(text),
-          "subtotal": subtotal,
-          "tax": tax,
-          "taxpercent": tax / total if total != 0 else 0,
-          "total": total,
-          
-          "items": receipt_parser.extract_items(text)
-      }
-      receipt_input["num_items"] = len(receipt_input["items"])
+        subtotal, tax, total = receipt_parser.extract_totals(text)
+        
+        receipt_input = {
+            "name": "Unnamed Receipt",
+            "store": receipt_parser.extract_store_name(text),
+            "address": receipt_parser.extract_address(text),
+            "date_purchased": receipt_parser.extract_date(text),
+            "subtotal": subtotal,
+            "tax": tax,
+            "taxpercent": tax / total if total != 0 else 0,
+            "total": total,
+            
+            "items": receipt_parser.extract_items(text)
+        }
+        receipt_input["num_items"] = len(receipt_input["items"])
   ########## END TEXT PROCESSING
     
-      receipt = ReceiptSerializer(data = receipt_input, context={"request": request})
+        receipt = ReceiptSerializer(data = receipt_input, context={"request": request})
 
-      if not receipt.is_valid():
-          return Response({"error": "Invalid receipt data, please try again later."}, status=status.HTTP_400_BAD_REQUEST)
+        if not receipt.is_valid():
+            return Response({"error": "Invalid receipt data, please try again later."}, status=status.HTTP_400_BAD_REQUEST)
 
-      receipt.save()
+        receipt.save()
 
-      request.user.num_receipts = Receipt.objects.filter(user = request.user).count()
-      request.user.save()
-      return Response(receipt.data,status=status.HTTP_201_CREATED)
+        request.user.num_receipts = Receipt.objects.filter(user = request.user).count()
+        request.user.save()
+        return Response(receipt.data,status=status.HTTP_201_CREATED)
     
     except Ratelimited:
         return Response({"error": "Too many requests, please slow down."}, status=status.HTTP_429_TOO_MANY_REQUESTS) 
